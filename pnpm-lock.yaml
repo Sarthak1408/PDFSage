@@ -9,7 +9,7 @@ dependencies:
     specifier: ^3.3.4
     version: 3.3.4(react-hook-form@7.51.1)
   '@kinde-oss/kinde-auth-nextjs':
-    specifier: ^2.1.7
+    specifier: ^2.1.15
     version: 2.1.15(@babel/core@7.23.9)(next@14.1.3)(react-dom@18.2.0)(react@18.2.0)
   '@mantine/hooks':
     specifier: ^7.6.2
@@ -75,14 +75,14 @@ dependencies:
     specifier: ^1.1.0
     version: 1.1.0
   date-fns:
-    specifier: ^3.5.0
-    version: 3.5.0
+    specifier: ^3.6.0
+    version: 3.6.0
   langchain:
     specifier: ^0.1.28
     version: 0.1.28(@pinecone-database/pinecone@2.1.0)(pdf-parse@1.1.1)(pg@8.11.3)
   lucide-react:
-    specifier: ^0.321.0
-    version: 0.321.0(react@18.2.0)
+    specifier: ^0.359.0
+    version: 0.359.0(react@18.2.0)
   next:
     specifier: ^14.1.3
     version: 14.1.3(@babel/core@7.23.9)(react-dom@18.2.0)(react@18.2.0)
@@ -132,8 +132,8 @@ dependencies:
     specifier: ^14.21.0
     version: 14.21.0
   tailwind-merge:
-    specifier: ^2.2.1
-    version: 2.2.1
+    specifier: ^2.2.2
+    version: 2.2.2
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.4.1)
@@ -1338,6 +1338,13 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.1
+
+  /@babel/runtime@7.24.1:
+    resolution: {integrity: sha512-+BIznRzyqBf+2wCTxcKE3wDjfGeCoVE61KSHGpkzqrLi8qxqFwBeUFyId2cxkTmm55fzDGnm0+yCxaxygrLUnQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.14.1
+    dev: false
 
   /@babel/template@7.23.9:
     resolution: {integrity: sha512-+xrD2BWLpvHKNmX2QbpdpsBaWnRxahMwJjO+KZk2JOElj5nSmKezyS1B4u+QbHMTX69t4ukm6hh9lsYQ7GHCKA==}
@@ -2969,7 +2976,7 @@ packages:
       file-selector: 0.6.0
       next: 14.1.3(@babel/core@7.23.9)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
-      tailwind-merge: 2.2.1
+      tailwind-merge: 2.2.2
       uploadthing: 6.6.0(next@14.1.3)(tailwindcss@3.4.1)
     transitivePeerDependencies:
       - '@uploadthing/mime-types'
@@ -3829,8 +3836,8 @@ packages:
       unit-fns: 0.1.9
     dev: false
 
-  /date-fns@3.5.0:
-    resolution: {integrity: sha512-a+DwyXn7NOfdJireCzAA0B9p7jIXEu/Q9JKCyMYvH6+0vPUNbQceA0neXrdfJ/xzl3mhOh5vibQQ3936Tssm6A==}
+  /date-fns@3.6.0:
+    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
     dev: false
 
   /debug@3.2.7:
@@ -5593,8 +5600,8 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lucide-react@0.321.0(react@18.2.0):
-    resolution: {integrity: sha512-Fi9VahIna6642U+2nAGSjnXwUBV3WyfFFPQq4yi3w30jtqxDLfSyiYCtCYCYQZ2KWNZc1MDI+rcsa0t+ChdYpw==}
+  /lucide-react@0.359.0(react@18.2.0):
+    resolution: {integrity: sha512-bxVL+rM/wacjpT0BKShA6r5IIKb6LCRg+ltFG9pnnIwaRX8kK3hq8v5JwMpT7RC6XeqB5cSaaV6GapPWWmtliw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
@@ -7488,10 +7495,10 @@ packages:
       vue: 3.4.21(typescript@5.3.3)
     dev: false
 
-  /tailwind-merge@2.2.1:
-    resolution: {integrity: sha512-o+2GTLkthfa5YUt4JxPfzMIpQzZ3adD1vLVkvKE1Twl9UAhGsEbIZhHHZVRttyW177S8PDJI3bTQNaebyofK3Q==}
+  /tailwind-merge@2.2.2:
+    resolution: {integrity: sha512-tWANXsnmJzgw6mQ07nE3aCDkCK4QdT3ThPMCzawoYA2Pws7vSTCvz3Vrjg61jVUGfFZPJzxEP+NimbcW+EdaDw==}
     dependencies:
-      '@babel/runtime': 7.23.9
+      '@babel/runtime': 7.24.1
     dev: false
 
   /tailwindcss-animate@1.0.7(tailwindcss@3.4.1):
