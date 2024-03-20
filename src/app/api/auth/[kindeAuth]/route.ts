@@ -1,9 +1,23 @@
-import { handleAuth } from '@kinde-oss/kinde-auth-nextjs/server'
-import { NextRequest } from 'next/server'
+// @ts-ignore
+import { handleAuth, AuthResponse } from '@kinde-oss/kinde-auth-nextjs/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(
+export default async function handler(
     request: NextRequest,
-    { params: {kindeAuth: endpoint} }: any
-) {
-    return handleAuth(request, endpoint)
+    { params }: any
+): Promise<void | Response> {
+    const { kindeAuth } = params; // Assuming kindeAuth is a parameter passed in params object
+
+    const authResponse: AuthResponse = handleAuth(request, kindeAuth);
+
+    // Ensure that authResponse is valid
+    if (!authResponse || !authResponse.body || !authResponse.status || !authResponse.headers) {
+        // Handle the case where the response object or its properties are missing
+        throw new Error('Invalid response from handleAuth');
+    }
+
+    return new NextResponse(authResponse.body, {
+        status: authResponse.status,
+        headers: authResponse.headers,
+    });
 }
