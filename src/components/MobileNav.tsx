@@ -13,8 +13,9 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
     const pathname = usePathname()
 
     useEffect(() => {
-        if (isOpen) toggleOpen()
-    }, [pathname])
+        if (isOpen) toggleOpen();
+    }, [isOpen]);
+
 
     const closeOnCurrent = (href: string) => {
         if (pathname === href) {
@@ -40,7 +41,7 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
                                             closeOnCurrent('/sign-up')
                                         }
                                         className='flex items-center w-full font-semibold text-green-600'
-                                        href='/sign-up'>
+                                        href={'/sign-up'}>
                                         Get started
                                         <ArrowRight className='ml-2 h-5 w-5' />
                                     </Link>
@@ -52,7 +53,7 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
                                             closeOnCurrent('/sign-in')
                                         }
                                         className='flex items-center w-full font-semibold'
-                                        href='/sign-in'>
+                                        href={'/sign-in'}>
                                         Sign in
                                     </Link>
                                 </li>
@@ -63,7 +64,7 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
                                             closeOnCurrent('/pricing')
                                         }
                                         className='flex items-center w-full font-semibold'
-                                        href='/pricing'>
+                                        href={'/pricing'}>
                                         Pricing
                                     </Link>
                                 </li>
@@ -84,7 +85,7 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
                                 <li>
                                     <Link
                                         className='flex items-center w-full font-semibold'
-                                        href='/sign-out'>
+                                        href={'/sign-out'}>
                                         Sign out
                                     </Link>
                                 </li>
