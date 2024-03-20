@@ -1,5 +1,5 @@
 import Navbar from '@/components/Navbar'
-import Provider from '@/components/Provider'
+import Providers from '@/components/Providers'
 import { cn, constructMetadata } from '@/lib/utils'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -8,6 +8,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import 'simplebar-react/dist/simplebar.min.css'
 
 import { Toaster } from '@/components/ui/toaster'
+import React from "react";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,7 +21,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang='en' className='light'>
-        <Provider>
+        <Providers>
             <body
                 className={cn(
                     'min-h-screen font-sans antialiased grainy',
@@ -30,7 +31,7 @@ export default function RootLayout({
             <Navbar />
             {children}
             </body>
-        </Provider>
+        </Providers>
         </html>
     )
 }
