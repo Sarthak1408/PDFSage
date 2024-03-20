@@ -1,23 +1,25 @@
 // @ts-ignore
+// noinspection ExceptionCaughtLocallyJS
+
 import { handleAuth, AuthResponse } from '@kinde-oss/kinde-auth-nextjs/server';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
-    request: NextRequest,
-    { params }: any
-): Promise<void | Response> {
-    const { kindeAuth } = params; // Assuming kindeAuth is a parameter passed in params object
+export default async (
+    req: NextApiRequest,
+    res: NextApiResponse
+): Promise<void> => {
+    try {
+        const { kindeAuth } = req.query;
 
-    const authResponse: AuthResponse = handleAuth(request, kindeAuth);
+        // @ts-ignore
+        const authResponse: AuthResponse = handleAuth(req, kindeAuth);
 
-    // Ensure that authResponse is valid
-    if (!authResponse || !authResponse.body || !authResponse.status || !authResponse.headers) {
-        // Handle the case where the response object or its properties are missing
-        throw new Error('Invalid response from handleAuth');
+        if (!(!authResponse || !authResponse.body || !authResponse.status || !authResponse.headers)) {
+            res.status(authResponse.status).setHeader('Content-Type', 'application/json').send(authResponse.body);
+        } else throw new Error('Invalid response from handleAuth');
+    } catch (error) {
+        // Handle errors
+        console.error('Error in handleAuth:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    return new NextResponse(authResponse.body, {
-        status: authResponse.status,
-        headers: authResponse.headers,
-    });
 }
