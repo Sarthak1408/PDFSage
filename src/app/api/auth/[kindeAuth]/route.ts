@@ -10,7 +10,7 @@ async function handleKindeAuth(req: NextApiRequest, res: NextApiResponse): Promi
 
         // Await the handleAuth function call
         // @ts-ignore
-        const authResponse: AuthResponse = handleAuth(req, kindeAuth);
+        const authResponse: AuthResponse = await handleAuth(req, kindeAuth);
 
         // Check if authResponse is valid
         if (authResponse && authResponse.body && authResponse.status && authResponse.headers) {
@@ -25,4 +25,8 @@ async function handleKindeAuth(req: NextApiRequest, res: NextApiResponse): Promi
     }
 }
 
-export default handleKindeAuth;
+const route = {
+    handler: handleKindeAuth
+};
+
+export default route;
