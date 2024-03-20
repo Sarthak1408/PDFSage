@@ -4,7 +4,7 @@
 import { handleAuth, AuthResponse } from '@kinde-oss/kinde-auth-nextjs/server';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handleKindeAuth(req: NextApiRequest, res: NextApiResponse): Promise<void> {
+const handleKindeAuth = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
     try {
         const { kindeAuth } = req.query;
 
@@ -23,4 +23,5 @@ export default async function handleKindeAuth(req: NextApiRequest, res: NextApiR
         console.error('Error in handleAuth:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-}
+};
+export default handleKindeAuth
