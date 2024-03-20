@@ -24,7 +24,7 @@ export default function Home() {
                     size: 'lg',
                     className: "mt-5",
                 })}
-                    href="/dashboard"
+                    href={"/dashboard"}
                     target="_blank">
                     Get Started <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
@@ -104,7 +104,7 @@ export default function Home() {
                                 Either starting out with a free plan or
                                 choose our{' '}
                                 <Link
-                                    href='/pricing'
+                                    href={'/pricing'}
                                     className='text-blue-700 underline underline-offset-2'>
                                     pro plan
                                 </Link>

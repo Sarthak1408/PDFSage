@@ -226,7 +226,7 @@ const Page = () => {
                                                 <UpgradeButton />
                                             ) : (
                                                 <Link
-                                                    href='/sign-in'
+                                                    href={'/sign-in'}
                                                     className={buttonVariants({
                                                         className: 'w-full',
                                                     })}>
