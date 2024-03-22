@@ -18,9 +18,10 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-const Page = () => {
+// const Page = () => {
+async function Page() {
     const { getUser } = getKindeServerSession()
-    const user = getUser()
+    const user = await getUser()
 
     const pricingItems = [
         {

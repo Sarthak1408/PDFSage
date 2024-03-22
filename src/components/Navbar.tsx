@@ -10,9 +10,12 @@ import { ArrowRight } from 'lucide-react'
 import UserAccountNav from './UserAccountNav'
 import MobileNav from './MobileNav'
 
-const Navbar = () => {
+console.log("navbar global")
+// const Navbar = () => {
+async function Navbar() {
     const { getUser } = getKindeServerSession()
-    const user = getUser()
+    const user = await getUser()
+
 
     return (
         <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all'>
@@ -65,7 +68,7 @@ const Navbar = () => {
 
                                 <UserAccountNav
                                     name={
-                                        !user.given_name || !user.family_name
+                                        user.given_name || !user.family_name
                                             ? 'Your Account'
                                             : `${user.given_name} ${user.family_name}`
                                     }
@@ -82,3 +85,4 @@ const Navbar = () => {
 }
 
 export default Navbar
+

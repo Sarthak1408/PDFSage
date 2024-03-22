@@ -1,32 +1,25 @@
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import {
-    privateProcedure,
-    publicProcedure,
-    router,
-} from './trpc'
-import { TRPCError } from '@trpc/server'
-import { db } from '@/db'
-import { z } from 'zod'
-import { INFINITE_QUERY_LIMIT } from '@/config/infinite-query'
-import { absoluteUrl } from '@/lib/utils'
-import {
-    getUserSubscriptionPlan,
-    stripe,
-} from '@/lib/stripe'
-import { PLANS } from '@/config/stripe'
+import {getKindeServerSession} from '@kinde-oss/kinde-auth-nextjs/server'
+import {privateProcedure, publicProcedure, router,} from './trpc'
+import {TRPCError} from '@trpc/server'
+import {db} from '@/db'
+import {z} from 'zod'
+import {INFINITE_QUERY_LIMIT} from '@/config/infinite-query'
+import {absoluteUrl} from '@/lib/utils'
+import {getUserSubscriptionPlan, stripe,} from '@/lib/stripe'
+import {PLANS} from '@/config/stripe'
 
 export const appRouter = router({
     authCallback: publicProcedure.query(async () => {
-        const { getUser } = getKindeServerSession()
-        const user = getUser()
+        const {getUser} = getKindeServerSession()
+        const user = await getUser()
 
-        if (!user.id || !user.email)
-            throw new TRPCError({ code: 'UNAUTHORIZED' })
+        if (user?.id || user?.email)
+            throw new TRPCError({code: 'UNAUTHORIZED'})
 
         // check if the user is in the database
         const dbUser = await db.user.findFirst({
             where: {
-                id: user.id,
+                id: user?.id,
             },
         })
 
@@ -34,16 +27,16 @@ export const appRouter = router({
             // create user in db
             await db.user.create({
                 data: {
-                    id: user.id,
-                    email: user.email,
+                    id: String(user?.id),
+                    email: String(user?.email),
                 },
             })
         }
 
-        return { success: true }
+        return {success: true}
     }),
-    getUserFiles: privateProcedure.query(async ({ ctx }) => {
-        const { userId } = ctx
+    getUserFiles: privateProcedure.query(async ({ctx}) => {
+        const {userId} = ctx
 
         return await db.file.findMany({
             where: {
@@ -53,13 +46,13 @@ export const appRouter = router({
     }),
 
     createStripeSession: privateProcedure.mutation(
-        async ({ ctx }) => {
-            const { userId } = ctx
+        async ({ctx}) => {
+            const {userId} = ctx
 
             const billingUrl = absoluteUrl('/dashboard/billing')
 
             if (!userId)
-                throw new TRPCError({ code: 'UNAUTHORIZED' })
+                throw new TRPCError({code: 'UNAUTHORIZED'})
 
             const dbUser = await db.user.findFirst({
                 where: {
@@ -68,7 +61,7 @@ export const appRouter = router({
             })
 
             if (!dbUser)
-                throw new TRPCError({ code: 'UNAUTHORIZED' })
+                throw new TRPCError({code: 'UNAUTHORIZED'})
 
             const subscriptionPlan =
                 await getUserSubscriptionPlan()
@@ -83,7 +76,7 @@ export const appRouter = router({
                         return_url: billingUrl,
                     })
 
-                return { url: stripeSession.url }
+                return {url: stripeSession.url}
             }
 
             const stripeSession =
@@ -106,7 +99,7 @@ export const appRouter = router({
                     },
                 })
 
-            return { url: stripeSession.url }
+            return {url: stripeSession.url}
         }
     ),
 
@@ -118,9 +111,9 @@ export const appRouter = router({
                 fileId: z.string(),
             })
         )
-        .query(async ({ ctx, input }) => {
-            const { userId } = ctx
-            const { fileId, cursor } = input
+        .query(async ({ctx, input}) => {
+            const {userId} = ctx
+            const {fileId, cursor} = input
             const limit = input.limit ?? INFINITE_QUERY_LIMIT
 
             const file = await db.file.findFirst({
@@ -130,7 +123,7 @@ export const appRouter = router({
                 },
             })
 
-            if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
+            if (!file) throw new TRPCError({code: 'NOT_FOUND'})
 
             const messages = await db.message.findMany({
                 take: limit + 1,
@@ -140,7 +133,7 @@ export const appRouter = router({
                 orderBy: {
                     createdAt: 'desc',
                 },
-                cursor: cursor ? { id: cursor } : undefined,
+                cursor: cursor ? {id: cursor} : undefined,
                 select: {
                     id: true,
                     isUserMessage: true,
@@ -162,8 +155,8 @@ export const appRouter = router({
         }),
 
     getFileUploadStatus: privateProcedure
-        .input(z.object({ fileId: z.string() }))
-        .query(async ({ input, ctx }) => {
+        .input(z.object({fileId: z.string()}))
+        .query(async ({input, ctx}) => {
             const file = await db.file.findFirst({
                 where: {
                     id: input.fileId,
@@ -171,15 +164,15 @@ export const appRouter = router({
                 },
             })
 
-            if (!file) return { status: 'PENDING' as const }
+            if (!file) return {status: 'PENDING' as const}
 
-            return { status: file.uploadStatus }
+            return {status: file.uploadStatus}
         }),
 
     getFile: privateProcedure
-        .input(z.object({ key: z.string() }))
-        .mutation(async ({ ctx, input }) => {
-            const { userId } = ctx
+        .input(z.object({key: z.string()}))
+        .mutation(async ({ctx, input}) => {
+            const {userId} = ctx
 
             const file = await db.file.findFirst({
                 where: {
@@ -188,15 +181,15 @@ export const appRouter = router({
                 },
             })
 
-            if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
+            if (!file) throw new TRPCError({code: 'NOT_FOUND'})
 
             return file
         }),
 
     deleteFile: privateProcedure
-        .input(z.object({ id: z.string() }))
-        .mutation(async ({ ctx, input }) => {
-            const { userId } = ctx
+        .input(z.object({id: z.string()}))
+        .mutation(async ({ctx, input}) => {
+            const {userId} = ctx
 
             const file = await db.file.findFirst({
                 where: {
@@ -205,7 +198,7 @@ export const appRouter = router({
                 },
             })
 
-            if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
+            if (!file) throw new TRPCError({code: 'NOT_FOUND'})
 
             await db.file.delete({
                 where: {
