@@ -10,16 +10,24 @@ import {PLANS} from '@/config/stripe'
 
 export const appRouter = router({
     authCallback: publicProcedure.query(async () => {
+        // db.$on('query', (e) => {
+        //     console.log('QUERY' + e.query)
+        // })
         const {getUser} = getKindeServerSession()
-        const user = await getUser()
+        // const user = await getUser()
+        const user = getUser()
 
-        if (user?.id || user?.email)
-            throw new TRPCError({code: 'UNAUTHORIZED'})
+        // if (user?.id || user?.email) throw new TRPCError({code: 'UNAUTHORIZED'})
 
         // check if the user is in the database
-        const dbUser = await db.user.findFirst({
+        // const dbUser = await db.user.findFirst({
+        //     where: {
+        //         id: user?.id,
+        //     },
+        // })
+        const dbUser = await db.user.findUnique({
             where: {
-                id: user?.id,
+                id: user?.id ? user.id : undefined,
             },
         })
 
@@ -27,90 +35,68 @@ export const appRouter = router({
             // create user in db
             await db.user.create({
                 data: {
-                    id: String(user?.id),
-                    email: String(user?.email),
+                    id: String(user?.id), email: String(user?.email),
                 },
             })
         }
 
         return {success: true}
-    }),
-    getUserFiles: privateProcedure.query(async ({ctx}) => {
+    }), getUserFiles: privateProcedure.query(async ({ctx}) => {
         const {userId} = ctx
 
         return await db.file.findMany({
             where: {
-                userId,
+                id: userId,
             },
         })
     }),
 
-    createStripeSession: privateProcedure.mutation(
-        async ({ctx}) => {
-            const {userId} = ctx
+    createStripeSession: privateProcedure.mutation(async ({ctx}) => {
+        const {userId} = ctx
 
-            const billingUrl = absoluteUrl('/dashboard/billing')
+        const billingUrl = absoluteUrl('/dashboard/billing')
 
-            if (!userId)
-                throw new TRPCError({code: 'UNAUTHORIZED'})
+        if (!userId) throw new TRPCError({code: 'UNAUTHORIZED'})
 
-            const dbUser = await db.user.findFirst({
-                where: {
-                    id: userId,
-                },
+        const dbUser = await db.user.findFirst({
+            where: {
+                id: userId,
+            },
+        })
+
+        if (!dbUser) throw new TRPCError({code: 'UNAUTHORIZED'})
+
+        const subscriptionPlan = await getUserSubscriptionPlan()
+
+        if (subscriptionPlan.isSubscribed && dbUser.stripeCustomerId) {
+            const stripeSession = await stripe.billingPortal.sessions.create({
+                customer: dbUser.stripeCustomerId, return_url: billingUrl,
             })
-
-            if (!dbUser)
-                throw new TRPCError({code: 'UNAUTHORIZED'})
-
-            const subscriptionPlan =
-                await getUserSubscriptionPlan()
-
-            if (
-                subscriptionPlan.isSubscribed &&
-                dbUser.stripeCustomerId
-            ) {
-                const stripeSession =
-                    await stripe.billingPortal.sessions.create({
-                        customer: dbUser.stripeCustomerId,
-                        return_url: billingUrl,
-                    })
-
-                return {url: stripeSession.url}
-            }
-
-            const stripeSession =
-                await stripe.checkout.sessions.create({
-                    success_url: billingUrl,
-                    cancel_url: billingUrl,
-                    payment_method_types: ['card', 'paypal'],
-                    mode: 'subscription',
-                    billing_address_collection: 'auto',
-                    line_items: [
-                        {
-                            price: PLANS.find(
-                                (plan) => plan.name === 'Pro'
-                            )?.price.priceIds.test,
-                            quantity: 1,
-                        },
-                    ],
-                    metadata: {
-                        userId: userId,
-                    },
-                })
 
             return {url: stripeSession.url}
         }
-    ),
+
+        const stripeSession = await stripe.checkout.sessions.create({
+            success_url: billingUrl,
+            cancel_url: billingUrl,
+            payment_method_types: ['card', 'paypal'],
+            mode: 'subscription',
+            billing_address_collection: 'auto',
+            line_items: [{
+                price: PLANS.find((plan) => plan.name === 'Pro')?.price.priceIds.test, quantity: 1,
+            },],
+            metadata: {
+                userId: userId,
+            },
+        })
+
+        return {url: stripeSession.url}
+    }),
 
     getFileMessages: privateProcedure
-        .input(
-            z.object({
-                limit: z.number().min(1).max(100).nullish(),
-                cursor: z.string().nullish(),
-                fileId: z.string(),
-            })
-        )
+        .input(z.object({
+            limit: z.number().min(1).max(100).nullish(), cursor: z.string().nullish(), fileId: z.string(),
+        }))
         .query(async ({ctx, input}) => {
             const {userId} = ctx
             const {fileId, cursor} = input
@@ -118,27 +104,19 @@ export const appRouter = router({
 
             const file = await db.file.findFirst({
                 where: {
-                    id: fileId,
-                    userId,
+                    id: fileId, userId,
                 },
             })
 
             if (!file) throw new TRPCError({code: 'NOT_FOUND'})
 
             const messages = await db.message.findMany({
-                take: limit + 1,
-                where: {
+                take: limit + 1, where: {
                     fileId,
-                },
-                orderBy: {
+                }, orderBy: {
                     createdAt: 'desc',
-                },
-                cursor: cursor ? {id: cursor} : undefined,
-                select: {
-                    id: true,
-                    isUserMessage: true,
-                    createdAt: true,
-                    text: true,
+                }, cursor: cursor ? {id: cursor} : undefined, select: {
+                    id: true, isUserMessage: true, createdAt: true, text: true,
                 },
             })
 
@@ -149,8 +127,7 @@ export const appRouter = router({
             }
 
             return {
-                messages,
-                nextCursor,
+                messages, nextCursor,
             }
         }),
 
@@ -159,8 +136,7 @@ export const appRouter = router({
         .query(async ({input, ctx}) => {
             const file = await db.file.findFirst({
                 where: {
-                    id: input.fileId,
-                    userId: ctx.userId,
+                    id: input.fileId, userId: ctx.userId,
                 },
             })
 
@@ -176,8 +152,7 @@ export const appRouter = router({
 
             const file = await db.file.findFirst({
                 where: {
-                    key: input.key,
-                    userId,
+                    key: input.key, userId,
                 },
             })
 
@@ -193,8 +168,7 @@ export const appRouter = router({
 
             const file = await db.file.findFirst({
                 where: {
-                    id: input.id,
-                    userId,
+                    id: input.id, userId,
                 },
             })
 

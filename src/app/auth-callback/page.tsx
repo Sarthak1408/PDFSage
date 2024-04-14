@@ -6,7 +6,7 @@ import {Loader2} from 'lucide-react'
 import {useEffect} from "react";
 
 // const Page = () => {
-const Page = async () => {
+const Page = () => {
     const router = useRouter()
 
     const searchParams = useSearchParams()
@@ -28,6 +28,7 @@ const Page = async () => {
     //     retry: true,
     //     retryDelay: 500,
     // })
+
     const authCallbackQuery = trpc.authCallback.useQuery(undefined, {
         retry: true, retryDelay: 500,
     });
