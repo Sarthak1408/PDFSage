@@ -24,7 +24,6 @@ const nextConfig = {
         return config
     },
 
-    // Add the following ESLint configuration
     eslint: {
         ignoreDuringBuilds: true,
         dirs: ['src'],
