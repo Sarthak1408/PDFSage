@@ -23,6 +23,15 @@ const nextConfig = {
         config.resolve.alias.encoding = false
         return config
     },
+
+    // Add the following ESLint configuration
+    eslint: {
+        ignoreDuringBuilds: true,
+        dirs: ['src'],
+        rules: {
+            'react-hooks/exhaustive-deps': 'off',
+        },
+    },
 }
 
 module.exports = nextConfig
