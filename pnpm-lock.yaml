@@ -101,6 +101,9 @@ dependencies:
   pg:
     specifier: ^8.11.3
     version: 8.11.5
+  prop-types:
+    specifier: ^15.8.1
+    version: 15.8.1
   psql:
     specifier: ^0.0.1
     version: 0.0.1
@@ -154,6 +157,9 @@ devDependencies:
   '@types/node':
     specifier: ^20
     version: 20.12.7
+  '@types/prop-types':
+    specifier: ^15.7.12
+    version: 15.7.12
   '@types/react':
     specifier: ^18
     version: 18.2.78

@@ -1,4 +1,4 @@
-import {string} from "prop-types";
+import * as PropTypes from "prop-types";
 import {ReactNode} from "react";
 import {cn} from "@/lib/utils";
 
