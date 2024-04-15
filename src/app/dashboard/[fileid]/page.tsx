@@ -15,10 +15,10 @@ const Page = async ({ params }: PageProps) => {
     const { fileid } = params
 
     const { getUser } = getKindeServerSession()
-    const user = await getUser()
+    const user = getUser()
 
     if (!user || !user.id)
-        redirect(`/auth-callback?origin=dashboard/${fileid}`)
+        return redirect(`/auth-callback?origin=dashboard/${fileid}`)
 
     const file = await db.file.findFirst({
         where: {
@@ -27,7 +27,7 @@ const Page = async ({ params }: PageProps) => {
         },
     })
 
-    if (!file) notFound()
+    if (!file) return notFound()
 
     const plan = await getUserSubscriptionPlan()
 

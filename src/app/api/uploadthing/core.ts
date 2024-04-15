@@ -65,6 +65,7 @@ const onUploadComplete = async ({
         const isFreeExceeded = pagesAmt > PLANS.find((plan) => plan.name === 'Free')!.pagesPerPdf
 
         if ((isSubscribed && isProExceeded) || (!isSubscribed && isFreeExceeded)) {
+            console.log("sub plan logic failed")
             await db.file.update({
                 data: {
                     uploadStatus: 'FAILED',
@@ -76,7 +77,7 @@ const onUploadComplete = async ({
 
         // vectorize and index entire document
         const pinecone = await getPineconeClient()
-        const pineconeIndex = pinecone.Index('pdfsage')
+        const pineconeIndex = pinecone.index('pdfsage')
 
         const embeddings = new OpenAIEmbeddings({
             openAIApiKey: process.env.OPENAI_API_KEY,

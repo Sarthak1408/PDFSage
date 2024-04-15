@@ -21,16 +21,16 @@ import Link from 'next/link'
 // const Page = () => {
 async function Page() {
     const { getUser } = getKindeServerSession()
-    const user = await getUser()
+    const user = getUser()
 
     const pricingItems = [
         {
             plan: 'Free',
             tagline: 'For small side projects.',
-            quota: 10,
+            quota: 5,
             features: [
                 {
-                    text: '50 pages per PDF',
+                    text: '10 pages per PDF',
                     footnote:
                         'The maximum amount of pages per PDF-file.',
                 },
@@ -60,7 +60,7 @@ async function Page() {
             quota: PLANS.find((p) => p.slug === 'pro')!.quota,
             features: [
                 {
-                    text: '100 pages per PDF',
+                    text: '50 pages per PDF',
                     footnote:
                         'The maximum amount of pages per PDF-file.',
                 },
@@ -132,7 +132,7 @@ async function Page() {
                                                 {tagline}
                                             </p>
                                             <p className='my-5 font-display text-6xl font-semibold'>
-                                                ${price}
+                                                ₹{price}
                                             </p>
                                             <p className='text-gray-500'>
                                                 per month
