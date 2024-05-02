@@ -13,7 +13,12 @@ const UpgradeButton = () => {
     })
 
     return (
-        <Button onClick={() => document.getElementById("pl").click()} className='w-full'>
+        <Button onClick={() => {
+            const plElement = document.getElementById("pl");
+            if (plElement) {
+                plElement.click();
+            }
+        }} className='w-full'>
             <a href="https://buy.stripe.com/test_4gw15sa49awzeC4146" target="_blank" rel="noreferrer" className="hidden" id="pl"></a>
             Upgrade now <ArrowRight className='h-5 w-5 ml-1.5' />
         </Button>
