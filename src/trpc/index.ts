@@ -44,11 +44,14 @@ export const appRouter = router({
     }), getUserFiles: privateProcedure.query(async ({ctx}) => {
         const {userId} = ctx
 
-        return db.file.findMany({
-            where: {
-                id: userId,
-            },
+        console.log(userId)
+
+        let result = await db.file.findMany({
+            // where: {
+            //     id: userId,
+            // },
         })
+        return result
     }),
 
     createStripeSession: privateProcedure.mutation(async ({ctx}) => {
